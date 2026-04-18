@@ -4,6 +4,8 @@ import { useRef, useEffect, useState } from "react";
 import { fadeUp } from "../lib/animations";
 import Link from "next/link";
 import RequestCard from "../components/RequestCard";
+import { db } from "../lib/firebase";
+import { collection, query, orderBy, limit, onSnapshot, getDocs, where } from "firebase/firestore";
 
 function AnimatedCounter({ value }) {
   const ref = useRef(null);
@@ -11,17 +13,16 @@ function AnimatedCounter({ value }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (isInView) {
+    if (isInView && value > 0) {
       let start = 0;
-      const end = value;
       const duration = 1500;
       const incrementTime = 30;
       const steps = duration / incrementTime;
-      const step = end / steps;
+      const step = value / steps;
       const timer = setInterval(() => {
         start += step;
-        if (start >= end) {
-          setCount(end);
+        if (start >= value) {
+          setCount(value);
           clearInterval(timer);
         } else {
           setCount(Math.ceil(start));
@@ -34,48 +35,42 @@ function AnimatedCounter({ value }) {
   return <span ref={ref}>{count}+</span>;
 }
 
-const FEATURED_REQUESTS = [
-  {
-    id: "1",
-    title: "Need help",
-    category: "Web Development",
-    urgency: "High",
-    status: "Solved",
-    description: "helpn needed",
-    userName: "Ayesha Khan",
-    userLocation: "Karachi",
-    helpers: [{}],
-    tags: [],
-  },
-  {
-    id: "2",
-    title: "Need help making my portfolio responsive before demo day",
-    category: "Web Development",
-    urgency: "High",
-    status: "Solved",
-    description:
-      "My HTML/CSS portfolio breaks on tablets and I need layout guidance before tomorrow evening.",
-    userName: "Sara Noor",
-    userLocation: "Karachi",
-    helpers: [{}],
-    tags: ["HTML/CSS", "Responsive", "Portfolio"],
-  },
-  {
-    id: "3",
-    title: "Looking for Figma feedback on a volunteer event poster",
-    category: "Design",
-    urgency: "Medium",
-    status: "Open",
-    description:
-      "I have a draft poster for a campus community event and want sharper hierarchy, spacing, and CTA copy.",
-    userName: "Ayesha Khan",
-    userLocation: "Lahore",
-    helpers: [{}],
-    tags: ["Figma", "Poster", "Design Review"],
-  },
-];
-
 export default function LandingPage() {
+  const [featuredRequests, setFeaturedRequests] = useState([]);
+  const [stats, setStats] = useState({ members: 0, requests: 0, solved: 0 });
+
+  useEffect(() => {
+    const q = query(collection(db, "requests"), orderBy("createdAt", "desc"), limit(3));
+    const unsub = onSnapshot(q, (snap) => {
+      setFeaturedRequests(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    }, () => {});
+    return () => unsub();
+  }, []);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [usersSnap, requestsSnap, solvedSnap] = await Promise.all([
+          getDocs(collection(db, "users")),
+          getDocs(collection(db, "requests")),
+          getDocs(query(collection(db, "requests"), where("status", "==", "Solved"))),
+        ]);
+        setStats({
+          members: usersSnap.size,
+          requests: requestsSnap.size,
+          solved: solvedSnap.size,
+        });
+      } catch (_) {}
+    };
+    fetchStats();
+  }, []);
+
+  const statItems = [
+    { label: "MEMBERS", value: stats.members, desc: "Students, mentors, and helpers in the loop." },
+    { label: "REQUESTS", value: stats.requests, desc: "Support posts shared across learning journeys." },
+    { label: "SOLVED", value: stats.solved, desc: "Problems resolved through fast community action." },
+  ];
+
   return (
     <div className="pb-24">
       {/* HERO SECTION */}
@@ -83,28 +78,19 @@ export default function LandingPage() {
         {/* LEFT COLUMN */}
         <div className="w-full md:w-[55%]">
           <motion.p
-            custom={0}
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
+            custom={0} initial="hidden" animate="visible" variants={fadeUp}
             className="text-[11px] font-semibold text-teal-primary uppercase tracking-[0.1em] mb-4"
           >
             SMIT GRAND CODING NIGHT 2026
           </motion.p>
           <motion.h1
-            custom={1}
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
+            custom={1} initial="hidden" animate="visible" variants={fadeUp}
             className="text-[clamp(36px,4vw,52px)] font-black text-[#0F1A17] leading-[1.1] mb-6"
           >
             Find help faster. Become help that matters.
           </motion.h1>
           <motion.p
-            custom={2}
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
+            custom={2} initial="hidden" animate="visible" variants={fadeUp}
             className="text-[15px] text-[#374151] mb-8 max-w-[440px] leading-relaxed"
           >
             HelpHub AI is a community-powered support network for students, mentors, creators, and
@@ -113,10 +99,7 @@ export default function LandingPage() {
           </motion.p>
 
           <motion.div
-            custom={3}
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
+            custom={3} initial="hidden" animate="visible" variants={fadeUp}
             className="flex flex-wrap gap-3 mb-12"
           >
             <Link
@@ -135,33 +118,11 @@ export default function LandingPage() {
 
           {/* STATS ROW */}
           <motion.div
-            custom={4}
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
+            custom={4} initial="hidden" animate="visible" variants={fadeUp}
             className="flex gap-4"
           >
-            {[
-              {
-                label: "MEMBERS",
-                value: 384,
-                desc: "Students, mentors, and helpers in the loop.",
-              },
-              {
-                label: "REQUESTS",
-                value: 72,
-                desc: "Support posts shared across learning journeys.",
-              },
-              {
-                label: "SOLVED",
-                value: 69,
-                desc: "Problems resolved through fast community action.",
-              },
-            ].map((stat, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-[16px] p-5 shadow-card flex-1 min-w-0"
-              >
+            {statItems.map((stat, i) => (
+              <div key={i} className="bg-white rounded-[16px] p-5 shadow-card flex-1 min-w-0">
                 <p className="text-[11px] font-semibold text-teal-primary uppercase tracking-[0.08em] mb-1">
                   {stat.label}
                 </p>
@@ -176,16 +137,11 @@ export default function LandingPage() {
 
         {/* RIGHT COLUMN — dark hero card */}
         <motion.div
-          custom={5}
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
+          custom={5} initial="hidden" animate="visible" variants={fadeUp}
           className="w-full md:w-[45%]"
         >
           <div className="bg-hero rounded-[20px] p-8 relative overflow-hidden">
-            {/* Decorative circle */}
             <div className="absolute top-[-30px] right-[-30px] w-[120px] h-[120px] rounded-full bg-amber-400/80" />
-
             <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-[0.1em] mb-3 relative">
               LIVE PRODUCT FEEL
             </p>
@@ -193,17 +149,14 @@ export default function LandingPage() {
               More than a form. More like an ecosystem.
             </h2>
             <p className="text-[14px] text-gray-400 mb-6 leading-relaxed relative">
-              A polished multi-page experience inspired by product platforms, with AI summaries,
-              trust scores, contribution signals, notifications, and leaderboard momentum built
-              directly in HTML, CSS, JavaScript, and LocalStorage.
+              A polished multi-page experience with AI summaries, trust scores, contribution signals,
+              notifications, and leaderboard momentum — all powered by Firebase and Google Gemini.
             </p>
-
             <div className="flex flex-col gap-3 relative">
               <div className="bg-white/10 border border-white/10 rounded-[12px] p-4">
                 <p className="font-bold text-white text-[14px] mb-1">AI request intelligence</p>
                 <p className="text-[13px] text-gray-400 leading-relaxed">
-                  Auto-categorization, urgency detection, tags, rewrite suggestions, and trend
-                  snapshots.
+                  Auto-categorization, urgency detection, tags, rewrite suggestions, and trend snapshots.
                 </p>
               </div>
               <div className="bg-white/10 border border-white/10 rounded-[12px] p-4">
@@ -241,29 +194,15 @@ export default function LandingPage() {
             Try onboarding AI
           </Link>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
-            {
-              title: "Ask for help clearly",
-              desc: "Create structured requests with category, urgency, AI suggestions, and tags that attract the right people.",
-            },
-            {
-              title: "Discover the right people",
-              desc: "Use the explore feed, helper lists, notifications, and messaging to move quickly once a match happens.",
-            },
-            {
-              title: "Track real contribution",
-              desc: "Trust scores, badges, solved requests, and rankings help the community recognize meaningful support.",
-            },
+            { title: "Ask for help clearly", desc: "Create structured requests with category, urgency, AI suggestions, and tags that attract the right people." },
+            { title: "Discover the right people", desc: "Use the explore feed, helper lists, notifications, and messaging to move quickly once a match happens." },
+            { title: "Track real contribution", desc: "Trust scores, badges, solved requests, and rankings help the community recognize meaningful support." },
           ].map((card, i) => (
             <motion.div
-              key={i}
-              custom={i}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={fadeUp}
+              key={i} custom={i} initial="hidden" whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }} variants={fadeUp}
               className="bg-white rounded-[16px] p-7 shadow-card"
             >
               <h3 className="text-[17px] font-bold text-[#0F1A17] mb-2">{card.title}</h3>
@@ -292,25 +231,29 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {FEATURED_REQUESTS.map((req, i) => (
-            <motion.div
-              key={req.id}
-              custom={i}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={fadeUp}
-            >
-              <RequestCard request={req} />
-            </motion.div>
-          ))}
-        </div>
+        {featuredRequests.length === 0 ? (
+          <div className="bg-white rounded-[16px] p-12 text-center shadow-card">
+            <p className="text-[#6B7280] font-medium text-[15px]">No community requests yet.</p>
+            <Link href="/auth" className="mt-4 inline-block text-teal-primary font-semibold hover:underline">
+              Join and post the first one →
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {featuredRequests.map((req, i) => (
+              <motion.div
+                key={req.id} custom={i} initial="hidden" whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }} variants={fadeUp}
+              >
+                <RequestCard request={req} />
+              </motion.div>
+            ))}
+          </div>
+        )}
       </section>
 
       <footer className="text-center py-8 text-[#6B7280] text-[13px] border-t border-[#E5E7EB]">
-        HelpHub AI is built as a premium-feel, multi-page community support product using HTML, CSS,
-        JavaScript, and LocalStorage.
+        HelpHub AI is built as a premium-feel, multi-page community support product using Next.js, Firebase, and Google Gemini AI.
       </footer>
     </div>
   );
