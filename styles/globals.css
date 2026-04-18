@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-page: #EAE6DC;
+  --bg-page-end: #F2EDE8;
+  --bg-hero-card: #1C2B2B;
+  --bg-card: #FFFFFF;
+  --bg-card-alt: #F7F5F0;
+  --teal-primary: #0D9488;
+  --teal-dark: #0A7A70;
+  --teal-label: #0D9488;
+  --text-primary: #0F1A17;
+  --text-body: #374151;
+  --text-muted: #6B7280;
+  --text-white: #FFFFFF;
+  --badge-high-bg: #FEE2E2;
+  --badge-high-text: #DC2626;
+  --badge-med-bg: #FEF9C3;
+  --badge-med-text: #B45309;
+  --badge-low-bg: #DCFCE7;
+  --badge-low-text: #16A34A;
+  --badge-solved-bg: #E0F2F1;
+  --badge-solved-text: #0D9488;
+  --badge-cat-bg: #F3F4F6;
+  --badge-cat-text: #374151;
+  --border-light: #E5E7EB;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+}
+
+body {
+  background: linear-gradient(135deg, #EAE6DC 0%, #EDE8E0 40%, #F2EDE8 70%, #EDE4D8 100%);
+  min-height: 100vh;
+  color: var(--text-body);
+}
