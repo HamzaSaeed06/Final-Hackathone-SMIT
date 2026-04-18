@@ -1,0 +1,844 @@
+Global Design Language:
+
+Background: Soft warm gradient #E8E4DC to #F0EDE6 (cream/beige — NOT white, NOT dark)
+Page hero banners: Dark rounded card #1C2B2B (deep dark teal-black), border-radius: 20px, large bold white heading
+Navbar: Transparent/white, logo = teal square #0D9488 with "H", active nav item = pill with light gray bg
+Primary button: #0D9488 teal, white text, border-radius: 999px (fully rounded pill)
+Secondary button: White bg, dark border, pill shape
+Cards: White bg #FFFFFF, border-radius: 16px, subtle box-shadow, generous padding 28-32px
+Typography: Very heavy font-weight: 800-900 for hero headings, font-weight: 400 body
+Section labels above headings: Small caps teal text #0D9488, letter-spacing wide
+Tag/badge chips: Light gray bg, rounded pill, small text — category chips on cards
+Urgency badges: Colored pills — High=red/salmon, Medium=yellow/amber, Low=green, Solved=gray-green
+Helper count: Muted small text below requester name
+
+Now here is the complete updated prompt with exact pixel-perfect design specs baked in:
+
+# HELPLYTICS AI — COMPLETE PIXEL-PERFECT BUILD PROMPT
+# SMIT Grand Coding Night 2026
+# Stack: Next.js | Firebase | Cloudinary | Tailwind CSS | Framer Motion | JSX only (NO TypeScript)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## GLOBAL DESIGN SYSTEM (pixel perfect — non-negotiable)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### Colors
+--bg-page:          #EAE6DC   /* warm cream gradient base */
+--bg-page-end:      #F2EDE8   /* gradient end, peach tint */
+--bg-hero-card:     #1C2B2B   /* all page hero banners */
+--bg-card:          #FFFFFF
+--bg-card-alt:      #F7F5F0   /* slightly off-white inner cards */
+--teal-primary:     #0D9488   /* buttons, active states, links, logo bg */
+--teal-dark:        #0A7A70
+--teal-label:       #0D9488   /* section label text (FILTERS, AI CENTER etc) */
+--text-primary:     #0F1A17   /* near black headings */
+--text-body:        #374151   /* body text */
+--text-muted:       #6B7280   /* secondary text, meta info */
+--text-white:       #FFFFFF
+--badge-high-bg:    #FEE2E2   /* red tint */
+--badge-high-text:  #DC2626
+--badge-med-bg:     #FEF9C3   /* yellow tint */
+--badge-med-text:   #B45309
+--badge-low-bg:     #DCFCE7   /* green tint */
+--badge-low-text:   #16A34A
+--badge-solved-bg:  #E0F2F1
+--badge-solved-text:#0D9488
+--badge-cat-bg:     #F3F4F6   /* category chips — gray */
+--badge-cat-text:   #374151
+--border-light:     #E5E7EB
+--shadow-card:      0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04)
+
+### Page Background
+Every page: 
+  background: linear-gradient(135deg, #EAE6DC 0%, #EDE8E0 40%, #F2EDE8 70%, #EDE4D8 100%);
+  min-height: 100vh;
+
+### Navbar (all pages — same pattern)
+- Height: 56px
+- Background: transparent (floats over page bg)
+- Logo: teal square 36x36 border-radius:10px bg #0D9488, white "H" text bold, "HelpHub AI" text dark beside it
+- Nav links: 15px regular, color #374151, no decoration
+- Active nav link: pill background #E5E7EB, border-radius:999px, padding:6px 14px
+- Primary CTA button: bg #0D9488, white text, border-radius:999px, padding:8px 20px, font-weight:600
+
+### Hero Banner Card (every page has this — exact same pattern)
+- Background: #1C2B2B
+- Border-radius: 20px
+- Padding: 48px 56px
+- Section label: font-size:11px, font-weight:600, letter-spacing:0.1em, color:#9CA3AF, text-transform:uppercase, margin-bottom:12px
+- Main heading: font-size:clamp(32px,4vw,52px), font-weight:800, color:#FFFFFF, line-height:1.1
+- Subheading: font-size:16px, color:#9CA3AF, margin-top:12px, font-weight:400
+- Margin: 24px from navbar, 32px margin-bottom
+
+### Cards
+- Background: #FFFFFF
+- Border-radius: 16px
+- Padding: 28px 32px
+- Box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04)
+- Border: none (no border on cards)
+
+### Request Cards (in feed/explore)
+- White card, border-radius:16px, padding:24px
+- Top row: category badge + urgency badge + status badge (pill chips, small)
+- Title: font-size:18px, font-weight:700, color:#0F1A17, margin-top:8px
+- Description: font-size:14px, color:#6B7280, margin-top:6px, line-height:1.5
+- Tags row (bottom of some cards): small gray pill chips
+- Requester name: font-size:14px, font-weight:600, color:#0F1A17
+- Meta (location • helpers): font-size:13px, color:#9CA3AF
+- "Open details" link: font-size:14px, font-weight:500, color:#0F1A17, float right
+
+### Badge/Tag Chips
+- All chips: border-radius:999px, padding:4px 12px, font-size:13px, font-weight:500
+- Category: bg:#F3F4F6, color:#374151
+- High: bg:#FEE2E2, color:#DC2626
+- Medium: bg:#FEF9C3, color:#B45309  
+- Low: bg:#DCFCE7, color:#16A34A
+- Solved: bg:#E0F2F1, color:#0D9488
+- Open: bg:#F3F4F6, color:#6B7280
+
+### Primary Button
+- Background: #0D9488
+- Color: white
+- Border-radius: 999px (full pill)
+- Padding: 12px 28px
+- Font-weight: 600
+- Font-size: 15px
+- Hover: bg #0A7A70
+
+### Secondary Button  
+- Background: white
+- Border: 1.5px solid #E5E7EB
+- Color: #0F1A17
+- Border-radius: 999px
+- Padding: 11px 28px
+
+### Section Labels (above card titles)
+- Text like "FILTERS", "AI CENTER", "TOP HELPERS", "AI SUMMARY", "ACTIONS", "HELPERS"
+- Font-size: 11px, font-weight: 600, letter-spacing: 0.1em, color: #0D9488, text-transform: uppercase
+
+### Card Headings (inside white cards)
+- Font-size: 28-32px, font-weight: 800, color: #0F1A17, line-height: 1.2
+
+### Input Fields
+- Background: #FFFFFF
+- Border: 1.5px solid #E5E7EB
+- Border-radius: 10px
+- Padding: 12px 16px
+- Font-size: 15px
+- Color: #374151
+- Focus: border-color #0D9488, outline none
+
+### Dropdown/Select
+- Same as input but with chevron icon right side
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## AGENT MANDATORY RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. After EVERY completed task → update README.md:
+   ✅ Completed section / 🔲 Remaining section
+2. Zero vulnerability check after each task:
+   - No API keys in code (use .env.local only)
+   - Firestore rules: auth required
+   - No unvalidated form inputs
+3. Pixel perfect: match reference images exactly using the design system above
+4. Stack locked: Next.js, Firebase, Cloudinary, Tailwind, Framer Motion, JSX only. Zero extra libraries.
+5. Complete phases in order. Show file tree after setup. Show preview notes after each page.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## INITIAL SETUP (before phases)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create this structure:
+helplytics/
+├── README.md
+├── .env.local                  ← NEXT_PUBLIC_FIREBASE_*, CLOUDINARY_*
+├── next.config.js
+├── tailwind.config.js          ← extend with custom colors above
+├── lib/
+│   ├── firebase.js             ← initializeApp, auth, db exports
+│   ├── firestore.js            ← CRUD helpers
+│   └── cloudinary.js           ← upload helper
+├── context/
+│   └── AuthContext.jsx         ← createContext, useAuth hook
+├── styles/
+│   └── globals.css             ← page bg gradient, base resets
+├── components/
+│   ├── Navbar.jsx              ← exact design from images
+│   ├── HeroBanner.jsx          ← reusable dark card hero (label + heading + sub)
+│   ├── RequestCard.jsx         ← feed card component
+│   ├── BadgeChip.jsx           ← urgency/category/status chips
+│   ├── AIPanel.jsx             ← right-side AI assistant panel
+│   └── LoadingSpinner.jsx
+└── app/
+    ├── page.jsx                ← Landing
+    ├── auth/page.jsx
+    ├── onboarding/page.jsx
+    ├── dashboard/page.jsx
+    ├── explore/page.jsx
+    ├── create/page.jsx
+    ├── request/[id]/page.jsx
+    ├── messages/page.jsx
+    ├── leaderboard/page.jsx
+    ├── ai-center/page.jsx
+    ├── notifications/page.jsx
+    ├── profile/[uid]/page.jsx
+    └── admin/page.jsx
+
+tailwind.config.js extend colors:
+  teal: { primary: '#0D9488', dark: '#0A7A70' }
+  hero: '#1C2B2B'
+  cream: '#EAE6DC'
+
+README.md template:
+---
+# HelpHub AI — Build Tracker
+
+## ✅ Completed
+(none yet)
+
+## 🔲 Remaining
+- [ ] Project setup + folder structure
+- [ ] Firebase + Cloudinary config
+- [ ] Tailwind custom tokens
+- [ ] AuthContext
+- [ ] Reusable components (Navbar, HeroBanner, RequestCard, BadgeChip)
+- [ ] PHASE 1: Landing Page
+- [ ] PHASE 1: Auth Page
+- [ ] PHASE 1: Onboarding Page
+- [ ] PHASE 2: Dashboard
+- [ ] PHASE 2: Explore / Feed
+- [ ] PHASE 2: Create Request
+- [ ] PHASE 2: Request Detail
+- [ ] PHASE 3: Messaging
+- [ ] PHASE 3: Leaderboard
+- [ ] PHASE 3: Profile
+- [ ] PHASE 3: Notifications
+- [ ] PHASE 4: AI Center
+- [ ] PHASE 4: Admin Panel
+- [ ] Final vulnerability audit
+- [ ] Final pixel-perfect check
+
+## Vulnerability Log
+(add after each task)
+
+## Notes
+---
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## PHASE 1 — Foundation Pages (60 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### PAGE 1: Landing Page — app/page.jsx
+
+Navbar:
+- Transparent bg, logo teal square "H" + "HelpHub AI"
+- Links: Home (active pill), Explore, Leaderboard, AI Center
+- Right side: "Live community signals" muted text + "Join the platform" teal pill button
+
+Hero Section (two-column layout):
+LEFT COLUMN (55% width):
+- Small label: "SMIT GRAND CODING NIGHT 2026" in teal caps
+- H1: "Find help faster. Become help that matters." — font-weight:800, size:52px, dark color
+- Body text: description paragraph, color #374151
+- Two buttons: "Open product demo" (teal pill) + "Post a request" (white pill border)
+- Stats row: 3 cards side by side — MEMBERS 384+, REQUESTS 72+, SOLVED 69+
+  - Each stat card: white bg, label in caps small teal, big number bold dark, description muted
+  - Framer Motion: count-up animation on numbers when in view
+
+RIGHT COLUMN (45% width):
+- Large white card with:
+  - Label "LIVE PRODUCT FEEL" teal small caps
+  - Heading: "More than a form. More like an ecosystem." — bold large
+  - Description paragraph in gray
+  - Inside: two inner feature cards (white with slight border):
+    * "AI request intelligence" — bold title + description
+    * "Community trust graph" — bold title + description
+  - "100%" stat + description at bottom
+
+Core Flow Section (full width below hero):
+- Label "CORE FLOW" teal caps
+- H2: "From struggling alone to solving together"
+- "Try onboarding AI" button right-aligned (teal pill)
+- 3 cards in row:
+  * "Ask for help clearly" + description
+  * "Discover the right people" + description
+  * "Track real contribution" + description
+
+Featured Requests Section:
+- Label "FEATURED REQUESTS"
+- H2: "Community problems currently in motion"
+- "View full feed" button right-aligned
+- 3 RequestCards side by side (use RequestCard component):
+  * Request 1: [Web Development][High][Solved] "Need help" — Ayesha Khan, Karachi, 1 helper
+  * Request 2: [Web Development][High][Solved] "Need help making my portfolio responsive before demo day" — Sara Noor, Karachi
+  * Request 3: [Design][Medium][Open] "Looking for Figma feedback on a volunteer event poster" — Ayesha Khan, Lahore
+
+Footer: simple one-liner text muted, centered.
+
+Framer Motion: 
+- Hero entrance: fade up stagger (0.1s delay each element)
+- Stats: count-up when scrolled into view
+- Cards: fade in from bottom with stagger
+
+---
+
+### PAGE 2: Auth Page — app/auth/page.jsx
+
+Page layout: two-column, centered, max-width 900px, vertically centered on page
+
+LEFT CARD (dark #1C2B2B, border-radius:20px, ~45% width):
+- Small label: "COMMUNITY ACCESS" — light gray caps
+- H1: "Enter the support network." — white, font-weight:800, size:40px
+- Description paragraph — #9CA3AF
+- Bullet list (3 items) — #9CA3AF, dot style, font-size:14px:
+  * "Role-based entry for Need Help, Can Help, or Both"
+  * "Direct path into dashboard, requests, AI Center, and community feed"
+  * "Persistent demo session powered by LocalStorage"
+
+RIGHT CARD (white, border-radius:20px, ~55% width):
+- Label "LOGIN / SIGNUP" — teal small caps
+- H2: "Authenticate your community profile" — dark, font-weight:800, size:32px
+- "Select demo user" label → dropdown (Ayesha Khan, Hassan Ali, Sara Noor)
+- "Role selection" label → dropdown (Need Help, Can Help, Both)
+- "Email" + "Password" labels → two inputs side by side (50/50)
+  - Email placeholder: "community@helplytics.ai"
+  - Password: dots
+- "Continue to dashboard" — full-width teal pill button, font-weight:600
+
+Firebase: onSubmit → signInWithEmailAndPassword or createUserWithEmailAndPassword
+On success → router.push('/dashboard')
+
+---
+
+### PAGE 3: Onboarding — app/onboarding/page.jsx
+
+Navbar: logo + "Home", "Explore", "Leaderboard" links (no active pill)
+
+Multi-step (3 steps), progress bar at top:
+- Progress bar: thin line, teal fill, animated width
+
+Step 1: Basic Info
+- Name (text input)
+- Location (text input)  
+- Profile photo upload → Cloudinary → store URL in state
+
+Step 2: Your Skills
+- Multi-tag input: type skill → press Enter → adds as teal chip
+- Pre-suggestions row: clickable gray chips (React, Python, Figma, etc.)
+- AI SUGGESTION BOX (shows after 2+ tags added):
+  - Label: "AI SUGGESTIONS" teal caps
+  - Text: "Based on your skills, you may also help with:"
+  - Chips: computed from suggestSkillsForUser(skills) function
+  - Light teal bg card, border-radius:12px
+
+Step 3: What you need help with
+- Same multi-tag input for need areas
+- Pre-suggestions: same chip style
+
+Navigation: "Back" (secondary) + "Next" / "Complete" (teal primary) buttons
+Framer Motion: AnimatePresence with slide left/right between steps
+On complete: save to Firestore users/{uid}, redirect to /dashboard
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## PHASE 2 — Core Pages (90 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### PAGE 4: Dashboard — app/dashboard/page.jsx
+
+Navbar: logo + Dashboard, Explore, Create Request, Messages, Leaderboard, Notifications — active = "Dashboard" pill
+
+NO sidebar. Full-width layout with max-width:1100px centered.
+
+Top: "Good morning, [Name] 👋" — H2 dark bold
+
+Stats row (4 cards horizontal):
+- Each: white card, section label teal caps + big number + description
+- My Requests / Requests Helped / Trust Score (show %) / Badges Earned
+
+Recent Requests section:
+- Label "RECENT REQUESTS" teal caps, H2 dark
+- List of last 5 RequestCards from Firestore (onSnapshot)
+
+AI Insight card (full width):
+- Teal-tinted bg (very light: #F0FBF9), border-radius:16px
+- Label "AI INSIGHTS"
+- Text: "Based on your skills, 3 people near you need help with React"
+- Link: "Browse matching requests →"
+
+Quick Actions row:
+- "Create Request" teal pill button
+- "Browse Feed" white pill button
+
+---
+
+### PAGE 5: Explore / Feed — app/explore/page.jsx
+
+Navbar: Dashboard, Explore (active pill), Leaderboard, Notifications
+
+Hero Banner (dark card):
+- Label: "EXPLORE / FEED"
+- H1: "Browse help requests with filterable community context."
+- Sub: "Filter by category, urgency, skills, and location to surface the best matches."
+
+Two-column layout below hero:
+
+LEFT COLUMN (~30% width) — white card, sticky:
+- Label "FILTERS" teal caps
+- H2 "Refine the feed" — font-weight:800, size:28px
+- Category: label + dropdown "All categories"
+- Urgency: label + dropdown "All urgency levels"
+- Skills: label + text input placeholder "React, Figma, Git/GitHub"
+- Location: label + text input placeholder "Karachi, Lahore, Remote"
+- All inputs: white bg, border #E5E7EB, border-radius:10px
+
+RIGHT COLUMN (~70% width) — list of RequestCards:
+Each RequestCard (from image exactly):
+- White card, border-radius:16px, padding:24px
+- Row 1: [Category chip] [Urgency chip] [Status chip]
+- Title: font-size:18px, font-weight:700, margin-top:8px
+- Description: font-size:14px, color:#6B7280, margin-top:6px
+- Tags row: gray chips
+- Requester name: bold 14px dark
+- Meta: "City • N helpers interested" — muted 13px
+- "Open details" — 14px dark text, right-aligned
+
+Firebase: onSnapshot on 'requests' collection, real-time filter in JS
+
+---
+
+### PAGE 6: Create Request — app/create/page.jsx
+
+Navbar: Dashboard, Explore, Create Request (active pill)
+
+Hero Banner (dark card):
+- Label: "CREATE REQUEST"
+- H1: "Turn a rough problem into a clear help request."
+- Sub: "Use built-in AI suggestions for category, urgency, tags, and a stronger description rewrite."
+
+Two-column layout:
+
+LEFT CARD (~60%):
+- "Title" label → text input (placeholder: "Need review on my JavaScript quiz app before submission")
+- "Description" label → textarea tall (placeholder: "Explain the challenge, your current progress, deadline, and what kind of help would be useful.")
+- "Tags" + "Category" → two inputs side by side (50/50)
+  - Tags: text input (placeholder: "JavaScript, Debugging, Review")
+  - Category: select dropdown (Web Development, Design, Math, Language, Career, Other)
+- "Urgency" → select dropdown (High, Medium, Low)
+- Bottom row: "Apply AI suggestions" (white pill) + "Publish request" (teal pill)
+
+RIGHT CARD (~40%):
+- Label "AI ASSISTANT" teal caps
+- H2 "Smart request guidance" — font-weight:800
+- 4 rows (label left, value right, separated by bottom border):
+  * "Suggested category" → "Community" (bold dark)
+  * "Detected urgency" → "Low" (bold dark)
+  * "Suggested tags" → "Add more detail for smarter tags" (muted italic)
+  * "Rewrite suggestion" → "Start describing the challenge to generate a stronger version." (muted)
+- Updates in real-time as user types using aiHelpers.js functions
+
+AI Logic (onChange on description):
+  - autoDetectCategory(text) → update Suggested category
+  - autoDetectUrgency(text) → update Detected urgency
+  - suggestTags(text) → update Suggested tags
+  - If description > 20 chars: generate rewrite suggestion
+
+Firebase: on "Publish request" → addDoc to 'requests' collection
+
+---
+
+### PAGE 7: Request Detail — app/request/[id]/page.jsx
+
+Navbar: Dashboard, Explore, Messages
+
+Hero Banner (dark):
+- Tags row: [Category chip][Urgency chip][Status chip] — small on banner
+- H1: Request title — white, font-weight:800, large
+- Sub: Description text — gray
+
+Two-column layout:
+
+LEFT COLUMN:
+WHITE CARD 1 — AI Summary:
+- Label "AI SUMMARY" teal caps
+- HelpHub AI logo (teal H square) + "HelpHub AI" name
+- AI-generated summary paragraph (auto-compute from request data)
+- Tags row: chips for request tags
+
+WHITE CARD 2 — Actions:
+- Label "ACTIONS" teal caps
+- "I can help" → teal pill button (adds currentUser to helpers[] in Firestore)
+- "Mark as solved" → white pill button (only if request.userId === currentUser.uid)
+  Updates request status to 'solved'
+
+RIGHT COLUMN:
+WHITE CARD 1 — Requester:
+- Label "REQUESTER" teal caps
+- User avatar circle (initials colored) + name
+- Location, role, join date
+
+WHITE CARD 2 — Helpers:
+- Label "HELPERS" teal caps
+- H3: "People ready to support"
+- List of helpers (from helpers[] array in Firestore):
+  Each row: colored avatar circle (initials) + Name + skills snippet + "Trust X%" pill badge
+  Avatar colors: use deterministic color from name (e.g. orange for AK, dark for HA)
+  Trust badge: bg:#F0FBF9, color:#0D9488, border-radius:999px, padding:4px 10px
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## PHASE 3 — Social Layer (75 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### PAGE 8: Messaging — app/messages/page.jsx
+
+Navbar: Dashboard, Explore, Messages (active pill)
+
+Hero Banner (dark):
+- Label: "INTERACTION / MESSAGING"
+- H1: "Keep support moving through direct communication."
+- Sub: "Basic messaging gives helpers and requesters a clear follow-up path once a match happens."
+
+Two-column layout (equal ~50/50):
+
+LEFT CARD:
+- Label "CONVERSATION STREAM" teal caps
+- H2: "Recent messages" — font-weight:800
+- List of message threads:
+  Each item (white inner card, border-radius:12px):
+  - "SenderName → ReceiverName" bold 15px dark
+  - Message preview text — 14px gray, 2 lines max
+  - Timestamp pill (bg:#F3F4F6, border-radius:999px): "09:45 AM"
+  - Divider between items
+- Firestore: query chats where participants includes currentUser
+
+RIGHT CARD:
+- Label "SEND MESSAGE" teal caps
+- H2: "Start a conversation" — font-weight:800
+- "To" label → dropdown of users
+- "Message" label → textarea (placeholder: "Share support details, ask for files, or suggest next steps.")
+- "Send" → full-width teal pill button
+- Firestore: addDoc to chats/{chatId}/messages
+
+---
+
+### PAGE 9: Leaderboard — app/leaderboard/page.jsx
+
+Navbar: Dashboard, Explore, Leaderboard (active pill)
+
+Hero Banner (dark):
+- Label: "LEADERBOARD"
+- H1: "Recognize the people who keep the community moving."
+- Sub: "Trust score, contribution count, and badges create visible momentum for reliable helpers."
+
+Two-column layout:
+
+LEFT CARD (~55%):
+- Label "TOP HELPERS" teal caps
+- H2: "Rankings" — font-weight:800
+- List of ranked users:
+  Each row (no card, just divider):
+  - "#N FirstName LastName" bold dark + right: "XX%" bold dark + "N contributions" muted small below
+  - Avatar circle: colored bg with initials (HA=dark navy, SN=orange)
+  - Skills text below name: "JavaScript, React, Git/GitHub" muted 13px
+  - Framer Motion: stagger fade-in on list items
+
+RIGHT CARD (~45%):
+- Label "BADGE SYSTEM" teal caps
+- H2: "Trust and achievement" — font-weight:800
+- List of users with progress bars:
+  Each item:
+  - Name bold dark
+  - Badges earned: small text muted (e.g. "Code Rescuer • Bug Hunter")
+  - Progress bar: gradient from amber/yellow to teal (#F59E0B to #0D9488), height:6px, border-radius:999px, bg:#E5E7EB
+  - Shows trust score progress
+
+Firestore: query users collection, orderBy('helpCount', 'desc'), limit(10)
+
+---
+
+### PAGE 10: Profile — app/profile/[uid]/page.jsx
+
+Navbar: Dashboard, Onboarding, Profile (active pill)
+
+Hero Banner (dark — full width):
+- Label: "PROFILE"
+- H1: User's name (e.g. "Ayesha Khan") — white, huge font-weight:800
+- Sub: "Role • Location" (e.g. "Both • Karachi") — gray
+
+Two-column layout:
+
+LEFT CARD (~60%):
+- Label "PUBLIC PROFILE" teal caps
+- H2: "Skills and reputation" — font-weight:800
+- Stats rows (each: label left, value right, bottom-border divider):
+  * "Trust score" → "100%" bold dark
+  * "Contributions" → "35" bold dark
+- "Skills" label bold → chips row (Figma, UI/UX, HTML/CSS, Career Guidance) — gray pills
+- "Badges" label bold → chips row (Design Ally, Fast Responder, Top Mentor) — gray pills
+
+RIGHT CARD (~40%):
+- Label "EDIT PROFILE" teal caps
+- H2: "Update your identity" — font-weight:800
+- "Name" + "Location" → two inputs side by side
+- "Skills" → text input (comma-separated)
+- "Interests" → text input (comma-separated)
+- "Save profile" → full-width teal pill button
+- Firestore: updateDoc users/{uid} on save
+- Only show edit card if uid === currentUser.uid
+
+---
+
+### PAGE 11: Notifications — app/notifications/page.jsx
+
+Navbar: Dashboard, Explore, Notifications (active pill)
+
+Hero Banner (dark):
+- Label: "NOTIFICATIONS"
+- H1: "Stay updated on requests, helpers, and trust signals."
+
+Single white card (full width, max 700px centered):
+- Label "LIVE UPDATES" teal caps
+- H2: "Notification feed" — font-weight:800
+- List of notifications (NO inner cards — just divider lines):
+  Each row:
+  - Message text: bold 15px dark (e.g. '"Need help" was marked as solved')
+  - Meta row: "Type • Time ago" — 13px muted (e.g. "Status • Just now")
+  - Status pill right side: "Unread" (gray bg, gray text) or "Read" (lighter gray)
+  - Bottom border divider
+
+Types in data:
+  - Status: request solved/updated
+  - Match: helper offered help
+  - Request: your request is live
+  - Reputation: trust score changed
+  - Insight: AI center detection
+
+Firestore: onSnapshot on notifications/{uid} subcollection, orderBy timestamp desc
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## PHASE 4 — AI + Admin (45 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### PAGE 12: AI Center — app/ai-center/page.jsx
+
+Navbar: Dashboard, Create Request, AI Center (active pill)
+
+Hero Banner (dark):
+- Label: "AI CENTER"
+- H1: "See what the platform intelligence is noticing."
+- Sub: "AI-like insights summarize demand trends, helper readiness, urgency signals, and request recommendations."
+
+3 stats cards row below hero (white cards, equal width):
+CARD 1 — "TREND PULSE" teal caps
+  H2: "Web Development" (most common category from Firestore)
+  Text: "Most common support area based on active community requests."
+
+CARD 2 — "URGENCY WATCH" teal caps
+  H2: Count of high-urgency open requests (number only, large)
+  Text: "Requests currently flagged high priority by the urgency detector."
+
+CARD 3 — "MENTOR POOL" teal caps
+  H2: Count of users with helpCount > 5 (number only)
+  Text: "Trusted helpers with strong response history and contribution signals."
+
+Full-width white card below:
+- Label "AI RECOMMENDATIONS" teal caps
+- H2: "Requests needing attention" — font-weight:800
+- List of top 4 open requests (sorted by urgency then recency):
+  Each item (white inner card, border-radius:12px, padding:20px, mb:12px):
+  - Request title — bold 16px dark
+  - AI Summary: auto-computed text: "[Category] request with [urgency] urgency. Best suited for members with relevant expertise."
+  - Chips row: [Category chip][Urgency chip]
+
+---
+
+### PAGE 13: Admin Panel — app/admin/page.jsx (bonus)
+
+Guard: if (!user || user.role !== 'admin') redirect('/dashboard')
+
+Navbar: logo + "Admin Panel" text
+
+Hero Banner:
+- Label: "ADMIN"
+- H1: "Platform oversight and content management."
+
+Stats row (3 cards): Total Requests / Solved % / Active Users
+
+Requests Table (white card):
+- Table headers: Title | Category | Urgency | Status | User | Actions
+- Each row: data + action buttons (Delete, Mark Solved, Flag) — small outline buttons
+- Firestore: getDocs('requests')
+
+Users Table (white card):
+- Headers: Name | Role | Trust Score | Contributions | Actions
+- Firestore: getDocs('users')
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## FIREBASE DATA STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+users/{uid}: {
+  name, email, role ('need-help'|'can-help'|'both'),
+  skills[], needsHelpWith[], interests[], location,
+  photoURL, trustScore (0-100), helpCount,
+  badgesEarned[], createdAt
+}
+
+requests/{id}: {
+  title, description, category, urgency ('low'|'medium'|'high'),
+  tags[], userId, userName, userPhoto, userLocation,
+  helpers: [{uid, name, skills, trustScore}],
+  status ('open'|'in-progress'|'solved'),
+  createdAt
+}
+
+chats/{chatId}: {
+  participants: [uid1, uid2],
+  lastMessage, lastTimestamp
+  messages/{msgId}: { senderId, text, timestamp }
+}
+
+notifications/{uid}/{notifId}: {
+  type ('status'|'match'|'request'|'reputation'|'insight'),
+  message, relatedId, read (bool), createdAt
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## AI HELPER FUNCTIONS — lib/aiHelpers.js
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const CATEGORY_KEYWORDS = {
+  'Web Development': ['react','javascript','html','css','next','node','api','bug','responsive','portfolio','frontend','backend'],
+  'Design': ['figma','ui','ux','design','logo','color','layout','wireframe','poster','visual'],
+  'Math': ['calculus','algebra','equation','statistics','probability','math','derivative'],
+  'Language': ['english','urdu','grammar','essay','writing','translate','paragraph'],
+  'Career': ['resume','cv','job','interview','linkedin','portfolio','internship','application'],
+  'Data Science': ['python','data','analysis','pandas','machine learning','model','csv'],
+};
+
+const URGENCY_KEYWORDS = {
+  high: ['urgent','asap','immediately','deadline today','emergency','tonight','by tomorrow','critical','right now'],
+  medium: ['this week','soon','important','few days','before'],
+};
+
+export function autoDetectCategory(text) {
+  const lower = text.toLowerCase();
+  for (const [cat, words] of Object.entries(CATEGORY_KEYWORDS)) {
+    if (words.some(w => lower.includes(w))) return cat;
+  }
+  return 'Community';
+}
+
+export function autoDetectUrgency(text) {
+  const lower = text.toLowerCase();
+  if (URGENCY_KEYWORDS.high.some(w => lower.includes(w))) return 'High';
+  if (URGENCY_KEYWORDS.medium.some(w => lower.includes(w))) return 'Medium';
+  return 'Low';
+}
+
+export function suggestTags(text) {
+  const lower = text.toLowerCase();
+  const allTags = Object.values(CATEGORY_KEYWORDS).flat();
+  const unique = [...new Set(allTags.filter(k => lower.includes(k)))];
+  return unique.slice(0, 5).map(t => t.charAt(0).toUpperCase() + t.slice(1));
+}
+
+export function generateAISummary(request) {
+  return `${request.category} request with ${request.urgency.toLowerCase()} urgency. Best suited for members with relevant expertise.`;
+}
+
+export function suggestSkillsForUser(skills) {
+  const related = {
+    'React': ['JavaScript', 'Next.js', 'Redux', 'TypeScript'],
+    'Figma': ['UI Design', 'Prototyping', 'User Research', 'Framer'],
+    'Python': ['Django', 'Data Analysis', 'Machine Learning', 'FastAPI'],
+    'HTML/CSS': ['Responsive Design', 'Tailwind CSS', 'Bootstrap'],
+    'JavaScript': ['React', 'Node.js', 'TypeScript', 'API Integration'],
+    'UI/UX': ['Figma', 'User Research', 'Wireframing', 'Design Systems'],
+  };
+  const suggestions = skills.flatMap(s => related[s] || []);
+  return [...new Set(suggestions)].filter(s => !skills.includes(s)).slice(0, 4);
+}
+
+export function computeTrustScore(user) {
+  // Base: 50 + (helpCount * 2) capped at 100
+  return Math.min(100, 50 + (user.helpCount || 0) * 2);
+}
+
+export function computeBadges(user) {
+  const badges = [];
+  if (user.helpCount >= 1) badges.push('First Helper');
+  if (user.helpCount >= 5) badges.push('Fast Responder');
+  if (user.helpCount >= 10) badges.push('Top Mentor');
+  if (user.skills?.includes('Figma') || user.skills?.includes('UI/UX')) badges.push('Design Ally');
+  if (user.skills?.includes('React') || user.skills?.includes('JavaScript')) badges.push('Code Rescuer');
+  return badges;
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## FRAMER MOTION ANIMATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// Reusable variants — put in lib/animations.js
+export const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1, y: 0,
+    transition: { delay: i * 0.08, duration: 0.4, ease: 'easeOut' }
+  })
+};
+
+export const slideIn = {
+  enter: (dir) => ({ x: dir > 0 ? 300 : -300, opacity: 0 }),
+  center: { x: 0, opacity: 1, transition: { duration: 0.35 } },
+  exit: (dir) => ({ x: dir < 0 ? 300 : -300, opacity: 0, transition: { duration: 0.25 } })
+};
+
+Use on:
+- Landing hero elements: motion.div with fadeUp + custom delay index
+- Stats count-up: useInView + spring counter
+- Onboarding steps: AnimatePresence + slideIn
+- Leaderboard rows: motion.div stagger with fadeUp
+- Request cards: motion.div with fadeUp stagger on explore page
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## FINAL CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- [ ] All 13 pages render without console errors
+- [ ] Background: warm cream gradient on ALL pages
+- [ ] Hero banner: dark #1C2B2B card on ALL inner pages
+- [ ] Teal #0D9488 used consistently for buttons, labels, active states
+- [ ] All buttons are pill-shaped (border-radius:999px)
+- [ ] Navbar active item has gray pill highlight
+- [ ] RequestCard matches image exactly: chips → title → desc → tags → user → meta
+- [ ] Auth page: split card layout exact
+- [ ] Profile page: split layout with trust/contributions stats
+- [ ] Leaderboard: left rankings + right badge progress bars
+- [ ] Firebase auth works (email + Google)
+- [ ] Firestore reads/writes on all pages
+- [ ] Real-time onSnapshot on explore + messages + notifications
+- [ ] AI functions fire on keystroke in create page
+- [ ] Cloudinary upload on onboarding
+- [ ] README fully updated after every task
+- [ ] .env.local has all keys (none hardcoded)
+- [ ] Firestore security rules: auth required on all reads/writes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## START COMMAND FOR AGENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Create the full folder structure, configure Tailwind with exact color tokens from the design system, set up Firebase (auth + firestore), create AuthContext.jsx, create all reusable components (Navbar, HeroBanner, RequestCard, BadgeChip, AIPanel) matching the pixel-perfect design system. Then update README.md marking setup complete and show the full file tree."
+
+Is prompt mein kya extra add hua images se:
+
+Exact hex colors har element ka (#1C2B2B, #0D9488, #EAE6DC etc.)
+Hero banner pattern har page pe same — dark rounded card
+Pill-shaped buttons everywhere (border-radius:999px)
+Section label style — teal small caps above every heading
+RequestCard exact structure — chips order, font sizes, meta text
+Auth page — split dark/white card layout
+Leaderboard — left rankings + right progress bars with gradient
+Profile — trust score row layout
+Notifications — divider-only list (no inner cards)
+Create Request — split form + AI panel
