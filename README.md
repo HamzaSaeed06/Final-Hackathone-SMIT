@@ -9,7 +9,7 @@
 
 1. **Zero Vulnerabilities** — Run a security check after every completed task. No API key exposed client-side (Gemini key server-only). No `dangerouslySetInnerHTML`. All Firestore writes auth-guarded.
 2. **Pixel Perfection** — Every page must match the provided reference screenshots exactly: colors, fonts, spacing, border-radius, badge chips, card shadows, dark hero cards, and warm cream gradient background.
-3. **No Mock Data** — All displayed data must be real and fetched from Firebase Firestore. Mock fallback arrays exist ONLY as a last-resort safety net for empty collections during demo, not as primary data.
+3. **No Mock Data** — All displayed data must be real and fetched from Firebase Firestore. No mock fallback arrays — all pages show empty states or loading spinners when Firestore is empty.
 4. **README Updated** — After every completed task, update the `## ✅ Completed` and `## 🔲 Remaining` sections below.
 
 ---
@@ -34,19 +34,19 @@
 helplytics/
 ├── app/
 │   ├── layout.jsx              # Root layout — AuthProvider + Navbar + global styles
-│   ├── page.jsx                # Landing page (hero, stats, core flow, featured requests)
+│   ├── page.jsx                # Landing page (live stats + featured requests from Firestore)
 │   ├── auth/page.jsx           # Login/Signup with demo user selector + Firebase Auth
 │   ├── onboarding/page.jsx     # 3-step wizard: identity → skills → needs (Gemini AI)
-│   ├── dashboard/page.jsx      # Stats cards, AI insight, recent requests
+│   ├── dashboard/page.jsx      # Stats cards, AI insight, recent requests (real Firestore)
 │   ├── explore/page.jsx        # Real-time Firestore feed with 4 filters
-│   ├── create/page.jsx         # Create request form + Gemini AI assistant panel
-│   ├── request/[id]/page.jsx   # Request detail: AI summary, helpers, actions
-│   ├── messages/page.jsx       # Direct messaging between helpers & requesters
-│   ├── leaderboard/page.jsx    # Rankings, trust scores, badge system
+│   ├── create/page.jsx         # Create request form + Gemini AI assistant + notification write
+│   ├── request/[id]/page.jsx   # Request detail: AI summary, helpers, actions + notification writes
+│   ├── messages/page.jsx       # Direct messaging between helpers & requesters (real Firestore)
+│   ├── leaderboard/page.jsx    # Rankings + trust scores + badges from Firestore users
 │   ├── profile/[uid]/page.jsx  # Public profile + owner edit panel + Cloudinary upload
-│   ├── notifications/page.jsx  # Live notification feed (Firestore real-time)
-│   ├── ai-center/page.jsx      # Trend pulse, urgency watch, AI recommendations
-│   ├── admin/page.jsx          # Request governance, user directory, delete actions
+│   ├── notifications/page.jsx  # Live real-time notification feed (Firestore onSnapshot)
+│   ├── ai-center/page.jsx      # Trend pulse, urgency watch, mentor pool (real Firestore)
+│   ├── admin/page.jsx          # Content governance + users + SEED DATABASE tool
 │   └── api/
 │       └── gemini/route.js     # Server-side Gemini handler (analyze/summarize/skills)
 ├── components/
@@ -60,7 +60,8 @@ helplytics/
 │   └── AuthContext.jsx         # Firebase onAuthStateChanged + Firestore profile
 ├── lib/
 │   ├── firebase.js             # Firebase app init (env-var config)
-│   ├── firestore.js            # Generic CRUD wrappers (addDoc, getDocs, updateDoc)
+│   ├── firestore.js            # writeNotification + updateUserHelpStats helpers
+│   ├── seedData.js             # SEED_USERS, SEED_REQUESTS, SEED_MESSAGES, SEED_NOTIFICATIONS
 │   ├── aiHelpers.js            # Client wrappers for /api/gemini + trust score logic
 │   ├── animations.js           # Framer Motion variants (fadeUp, stagger, slideIn)
 │   └── cloudinary.js           # Cloudinary upload helper (unsigned preset)
@@ -111,15 +112,15 @@ helplytics/
 }
 ```
 
-### `messages/{id}`
+### `chats/{id}`
 ```json
 {
-  "from": "Ayesha Khan",
-  "fromUid": "uid",
-  "to": "Sara Noor",
-  "toUid": "uid",
-  "text": "I checked your portfolio request...",
-  "timestamp": "ISO string"
+  "participants": ["uid1", "uid2"],
+  "senderName": "Ayesha Khan",
+  "receiverName": "Sara Noor",
+  "lastMessage": "I checked your request...",
+  "lastTimestamp": "09:45 AM",
+  "createdAt": "ISO string"
 }
 ```
 
@@ -172,33 +173,29 @@ helplytics/
 - [x] Gemini API server-side route (`/api/gemini`)
 
 ### PHASE 1 — Public Pages ✅
-- [x] **Landing Page** — Two-column hero (dark right card, amber circle), count-up stats, core flow cards, featured requests grid, footer
+- [x] **Landing Page** — Two-column hero (dark right card, amber circle), live count-up stats from Firestore, core flow cards, featured requests grid (real Firestore, `onSnapshot`), footer
 - [x] **Auth Page** — Dark left info card, demo user dropdown (Ayesha/Hassan/Sara), role selection, email/password, Firebase Auth (auto-create on first login), redirect to onboarding or dashboard
 - [x] **Onboarding Page** — 3-step wizard: identity form → skills + Gemini suggestions → needs/interests, saves to Firestore users collection
 
 ### PHASE 2 — Core App Pages ✅
-- [x] **Dashboard** — Stats cards (my requests, help count, trust score), AI insight banner based on skills, recent community requests grid (real Firestore data), quick action buttons
-- [x] **Explore / Feed** — Real-time Firestore `onSnapshot`, category filter, urgency filter, skills filter, location filter, RequestCard grid
-- [x] **Create Request** — Title, description, tags, category dropdown, urgency dropdown, AI Assistant panel (Gemini auto-analyze on description change), Apply AI suggestions button, Publish to Firestore
-- [x] **Request Detail** — Full request display, AI summary (Gemini), requester info, helpers list with trust scores, "I can help" (adds to helpers array), "Mark as solved" (updates status), HeroBanner with category/urgency/status badges
+- [x] **Dashboard** — Stats cards (my requests, help count, trust score, badges) from Firestore profile, AI insight banner based on skills, recent community requests grid (real-time `onSnapshot`), quick action buttons
+- [x] **Explore / Feed** — Real-time Firestore `onSnapshot`, category/urgency/skills/location filters, RequestCard grid, empty state
+- [x] **Create Request** — Title, description, tags, category dropdown, urgency dropdown, AI Assistant panel (Gemini auto-analyze on description change), Apply AI suggestions button, Publish to Firestore + writes notification to requester + increments `requestsCreated` counter
+- [x] **Request Detail** — Full request display, AI summary (Gemini), requester info, helpers list with trust scores, "I can help" (adds to helpers array + writes notification to requester + updates helper stats), "Mark as solved" (updates status + writes notification to requester + all helpers), HeroBanner with badges
 
 ### PHASE 3 — Community & Social ✅
-- [x] **Messaging** — Conversation stream (real Firestore messages), send message form with user selector, timestamp display, real-time `onSnapshot`
-- [x] **Leaderboard** — Top helpers ranked by trustScore from Firestore users collection, avatar initials with colored circles, trust score progress bars (gold/teal gradient), badge system display
-- [x] **Profile** — Dark hero header with name/role/location, public skills + badges + trust score + contribution count panel, owner edit form (name, location, skills, interests), save to Firestore, Cloudinary photo upload
-- [x] **Notifications** — Live notification feed from Firestore `notifications` collection, Unread/Read state toggle, type labels (Status, Match, Request, Reputation, Insight)
+- [x] **Messaging** — Conversation stream (real Firestore chats collection, `onSnapshot`), send message form with user selector from Firestore, writes new chat doc on send
+- [x] **Leaderboard** — Top helpers ranked by `helpCount` from Firestore, avatar initials with colored circles, animated trust score progress bars (gold/teal gradient), badges from Firestore
+- [x] **Profile** — Dark hero header, public skills + badges + trust score + contribution count from Firestore, owner edit form (name, location, skills, interests), saves to Firestore, Cloudinary photo upload
+- [x] **Notifications** — Live real-time feed from Firestore `notifications` collection (filtered by `userId`), `onSnapshot`, mark read on click, empty state for no notifications
 
 ### PHASE 4 — AI & Admin ✅
-- [x] **AI Center** — Trend pulse card (most common category), urgency watch count, mentor pool count, AI recommendations list (high urgency requests with Gemini summaries)
-- [x] **Admin Panel** — Requests table with delete, users directory, content governance
+- [x] **AI Center** — Trend pulse (most common category from Firestore), urgency watch (count of open high-urgency requests), mentor pool count (users with `helpCount > 3`), AI recommendations (high-urgency requests from Firestore)
+- [x] **Admin Panel** — Requests table (real Firestore), users directory (real Firestore), delete request action, **Seed Database tool** (populates Firestore with SEED_USERS, SEED_REQUESTS, SEED_MESSAGES, SEED_NOTIFICATIONS from `lib/seedData.js`)
 
 ### PHASE 5 — Production Hardening 🔲
-- [ ] **Remove all mock data arrays** — All pages must fetch only from Firestore; mock fallbacks remain only for truly empty collections (0 documents)
-- [ ] **Cloudinary image upload** — Profile photo upload in `/profile/[uid]` using unsigned upload preset; `photoURL` stored in Firestore user doc
-- [ ] **Real-time notifications** — Write Firestore notification docs on: request publish, "I can help" click, "Mark as solved" click; notification feed reads live with `onSnapshot`
 - [ ] **Firestore security rules** — `auth != null` guard on all write operations; profile updates only by owner (`request.auth.uid == userId`)
 - [ ] **Environment secrets** — Confirm all keys set in Replit Secrets: `NEXT_PUBLIC_FIREBASE_*`, `GEMINI_API_KEY`, `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`
-- [ ] **Seed Firestore** — Create seed script to populate demo requests/users/messages/notifications for empty-DB demo
 - [ ] **Final vulnerability audit** — Check all 7 vulnerability categories (see log below)
 - [ ] **Deploy to production** — Set production env vars, run `next build`, deploy
 
@@ -212,19 +209,23 @@ helplytics/
 - [x] Global CSS (warm cream gradient, CSS variables)
 - [x] AuthContext (Firebase onAuthStateChanged, useAuth hook)
 - [x] Reusable components: Navbar, HeroBanner, RequestCard, BadgeChip, AIPanel, LoadingSpinner
-- [x] PHASE 1: Landing Page
+- [x] PHASE 1: Landing Page — live Firestore stats + featured requests
 - [x] PHASE 1: Auth Page
 - [x] PHASE 1: Onboarding Page
-- [x] PHASE 2: Dashboard
-- [x] PHASE 2: Explore / Feed
-- [x] PHASE 2: Create Request
-- [x] PHASE 2: Request Detail
-- [x] PHASE 3: Messaging
-- [x] PHASE 3: Leaderboard
-- [x] PHASE 3: Profile
-- [x] PHASE 3: Notifications
-- [x] PHASE 4: AI Center
-- [x] PHASE 4: Admin Panel
+- [x] PHASE 2: Dashboard — real Firestore profile stats + real-time request feed
+- [x] PHASE 2: Explore / Feed — real-time `onSnapshot` + 4 filters
+- [x] PHASE 2: Create Request — Gemini AI panel + Firestore publish + notification write
+- [x] PHASE 2: Request Detail — "I can help" + "Mark as solved" both write Firestore notifications + update helper stats
+- [x] PHASE 3: Messaging — real Firestore chats (read + write)
+- [x] PHASE 3: Leaderboard — real Firestore users ranked by helpCount
+- [x] PHASE 3: Profile — real Firestore read/write, owner-only edit
+- [x] PHASE 3: Notifications — real-time `onSnapshot` filtered by userId + mark-read
+- [x] PHASE 4: AI Center — live Firestore insights (trend, urgency, mentor pool, recommendations)
+- [x] PHASE 4: Admin Panel — real Firestore data + Seed Database tool
+- [x] T001: writeNotification + updateUserHelpStats helpers in lib/firestore.js
+- [x] T002: All mock/dummy data removed from every page — zero mock arrays remain
+- [x] T003: lib/seedData.js + admin seed tool (users, requests, chats, notifications)
+- [x] T004: README updated with completed status for all tasks
 - [x] Gemini API server-side route
 - [x] Pixel-perfect design system (cream bg, dark hero cards, teal buttons, badge chips, card shadows)
 - [x] Framer Motion animations (fade-up stagger, count-up stats, slide-in onboarding, progress bars)
@@ -235,13 +236,9 @@ helplytics/
 
 ## 🔲 Remaining Tasks
 
-- [ ] Remove mock data from all pages — dynamic Firestore only
-- [ ] Cloudinary profile photo upload (unsigned preset)
-- [ ] Real-time Firestore notification writes (on publish/help/solve events)
 - [ ] Firestore security rules (`auth != null` + owner-only writes)
-- [ ] Set all required Replit Secrets (Firebase, Gemini, Cloudinary)
-- [ ] Seed script for demo data
-- [ ] Final vulnerability audit
+- [ ] Confirm all Replit Secrets set (Firebase, Gemini, Cloudinary)
+- [ ] Final vulnerability audit (7 categories)
 - [ ] Production deployment
 
 ---
@@ -254,7 +251,7 @@ helplytics/
 | Firebase keys | `NEXT_PUBLIC_*` (browser-safe per Firebase design, domain-restricted in Firebase Console) | ✅ |
 | Input sanitization | All form inputs via React controlled state (no innerHTML / no eval) | ✅ |
 | XSS | No `dangerouslySetInnerHTML` used anywhere | ✅ |
-| Auth guards | Profile edit only shown to owner (`user.uid === uid`), Admin page needs production auth guard | ⚠️ Demo mode |
+| Auth guards | Profile edit only shown to owner (`user.uid === uid`), Admin open for demo | ⚠️ Demo mode |
 | Firestore rules | Need `auth != null` rules set in Firebase Console before production deploy | 🔲 Pending |
 | Memory leaks | All `onSnapshot` listeners returned as `unsub()` in `useEffect` cleanup | ✅ |
 
@@ -285,6 +282,18 @@ Set these in Replit Secrets before production deployment:
 | `analyze_request` | User types in Create Request description | Returns category, urgency, tags, rewrite suggestion |
 | `generate_summary` | Request Detail page loads | Returns 2-sentence plain-text summary |
 | `suggest_skills` | Onboarding step 2 / Profile page | Returns 4 related skill suggestions |
+
+---
+
+## Seed Database (Admin Tool)
+
+Go to `/admin` and click **"Seed database with demo data"** to populate Firestore with:
+- **3 demo users** — Ayesha Khan, Hassan Ali, Sara Noor (with skills, trust scores, badges)
+- **5 demo requests** — across Web Dev, Design, Career, Data Science categories
+- **2 demo chat threads** — realistic helper-to-requester conversations
+- **6 demo notifications** — Status, Match, Request, Reputation, Insight types
+
+All seed data uses `lib/seedData.js` constants. Safe to run multiple times.
 
 ---
 
