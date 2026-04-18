@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "../context/AuthContext";
 
 const NAV_CONFIGS = {
   "/": {
@@ -88,6 +89,15 @@ function getConfig(pathname) {
 export default function Navbar() {
   const pathname = usePathname();
   const config = getConfig(pathname);
+  const { user, profile } = useAuth();
+
+  const initials = profile?.name
+    ? profile.name.split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase()
+    : user?.email
+    ? user.email.substring(0, 2).toUpperCase()
+    : "AK";
+
+  const profilePath = user ? `/profile/${user.uid}` : "/profile/me";
 
   return (
     <nav className="h-[56px] flex items-center justify-between py-2">
@@ -133,8 +143,8 @@ export default function Navbar() {
           </>
         )}
         {config.right === "user" && (
-          <Link href="/profile/me" className="w-8 h-8 rounded-full bg-teal-primary text-white flex items-center justify-center font-bold text-[13px]">
-            AK
+          <Link href={profilePath} className="w-8 h-8 rounded-full bg-teal-primary text-white flex items-center justify-center font-bold text-[13px]">
+            {initials}
           </Link>
         )}
       </div>

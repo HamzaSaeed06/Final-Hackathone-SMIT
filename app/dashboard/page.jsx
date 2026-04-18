@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
 import { db } from "../../lib/firebase";
-import { collection, query, orderBy, limit, onSnapshot, doc, getDoc } from "firebase/firestore";
+import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
 import RequestCard from "../../components/RequestCard";
 
 const MOCK_REQUESTS = [
@@ -46,18 +46,11 @@ const MOCK_REQUESTS = [
 ];
 
 export default function DashboardPage() {
-  const { user } = useAuth();
-  const [profile, setProfile] = useState(null);
+  const { user, profile } = useAuth();
   const [recentRequests, setRecentRequests] = useState(MOCK_REQUESTS);
 
   useEffect(() => {
-    if (user?.uid) {
-      getDoc(doc(db, "users", user.uid)).then((snap) => {
-        if (snap.exists()) setProfile(snap.data());
-      });
-    }
-
-    const q = query(collection(db, "requests"), orderBy("createdAt", "desc"), limit(5));
+    const q = query(collection(db, "requests"), orderBy("createdAt", "desc"), limit(6));
     const unsub = onSnapshot(q, (snapshot) => {
       const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
       if (items.length > 0) setRecentRequests(items);
@@ -109,7 +102,8 @@ export default function DashboardPage() {
             AI INSIGHTS
           </p>
           <p className="text-[16px] font-semibold text-teal-dark">
-            Based on your skills, 3 people near you need help with React.
+            Based on your skills, people near you need help with{" "}
+            {profile?.skills?.[0] || "React"}. You are a match!
           </p>
         </div>
         <Link

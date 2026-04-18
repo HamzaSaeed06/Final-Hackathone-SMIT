@@ -35,8 +35,8 @@ export default function MessagesPage() {
     const cu = auth.currentUser;
     setCurrentUser(cu);
     getDocs(collection(db, "users")).then((snap) => {
-      setUsers(snap.docs.map((doc) => ({ uid: doc.id, ...doc.data() })));
-    });
+      if (!snap.empty) setUsers(snap.docs.map((doc) => ({ uid: doc.id, ...doc.data() })));
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {

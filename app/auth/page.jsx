@@ -1,21 +1,25 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../lib/firebase";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import { auth, db } from "../../lib/firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const DEMO_USERS = [
-  { label: "Ayesha Khan", email: "ayesha@helplytics.ai", password: "password123", role: "Both" },
-  { label: "Hassan Ali", email: "hassan@helplytics.ai", password: "password123", role: "Can Help" },
-  { label: "Sara Noor", email: "sara@helplytics.ai", password: "password123", role: "Both" },
+  { label: "Ayesha Khan", email: "ayesha@helplytics.ai", password: "helphub2024", role: "Both", location: "Karachi" },
+  { label: "Hassan Ali", email: "hassan@helplytics.ai", password: "helphub2024", role: "Can Help", location: "Lahore" },
+  { label: "Sara Noor", email: "sara@helplytics.ai", password: "helphub2024", role: "Both", location: "Islamabad" },
 ];
 
 export default function AuthPage() {
   const [mode, setMode] = useState("login");
   const [selectedDemo, setSelectedDemo] = useState("Ayesha Khan");
   const [role, setRole] = useState("Both");
-  const [email, setEmail] = useState("community@helplytics.ai");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("ayesha@helplytics.ai");
+  const [password, setPassword] = useState("helphub2024");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -31,24 +35,84 @@ export default function AuthPage() {
     }
   };
 
+  const saveUserProfile = async (user, name, userRole, location = "Remote") => {
+    const existing = await getDoc(doc(db, "users", user.uid));
+    if (!existing.exists()) {
+      await setDoc(doc(db, "users", user.uid), {
+        name,
+        email: user.email,
+        role: userRole,
+        location,
+        skills: [],
+        needsHelpWith: [],
+        trustScore: 50,
+        helpCount: 0,
+        badgesEarned: [],
+        requestsCreated: 0,
+        createdAt: new Date().toISOString(),
+      });
+      return false;
+    }
+    return true;
+  };
+
   const handleAuth = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
       if (mode === "login") {
-        await signInWithEmailAndPassword(auth, email, password);
-        router.push("/dashboard");
+        let userCredential;
+        try {
+          userCredential = await signInWithEmailAndPassword(auth, email, password);
+        } catch (loginErr) {
+          const needsCreate =
+            loginErr.code === "auth/user-not-found" ||
+            loginErr.code === "auth/invalid-credential" ||
+            loginErr.code === "auth/invalid-login-credentials" ||
+            loginErr.code === "auth/wrong-password";
+
+          if (needsCreate) {
+            try {
+              userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            } catch (createErr) {
+              if (createErr.code === "auth/email-already-in-use") {
+                throw new Error("This demo account exists with a different password. Please try signing up with a new email.");
+              }
+              throw createErr;
+            }
+          } else {
+            throw loginErr;
+          }
+        }
+
+        const user = userCredential.user;
+        const demoUser = DEMO_USERS.find((u) => u.label === selectedDemo);
+        const profileExists = await saveUserProfile(
+          user,
+          demoUser?.label || selectedDemo,
+          role,
+          demoUser?.location || "Remote"
+        );
+
+        localStorage.setItem("helphub_role", role);
+        localStorage.setItem("helphub_name", demoUser?.label || selectedDemo);
+
+        if (profileExists) {
+          router.push("/dashboard");
+        } else {
+          router.push("/onboarding");
+        }
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        localStorage.setItem("helphub_role", role);
+        localStorage.setItem("helphub_name", email.split("@")[0]);
         router.push("/onboarding");
       }
     } catch (err) {
-      if (err.code === "auth/user-not-found" || err.code === "auth/invalid-credential") {
-        setError("Demo account not found. Try signing up first.");
-      } else {
-        setError(err.message.replace("Firebase: ", "").replace(/ \(auth.*\)\.?/, ""));
-      }
+      setError(
+        err.message.replace("Firebase: ", "").replace(/ \(auth.*\)\.?/, "")
+      );
     } finally {
       setLoading(false);
     }
@@ -66,18 +130,21 @@ export default function AuthPage() {
             Enter the support network.
           </h1>
           <p className="text-[14px] text-gray-400 mb-8 leading-relaxed">
-            Choose a demo identity, set your role, and jump into a multi-page product flow designed
-            for asking, offering, and tracking help with a premium interface.
+            Choose a demo identity, set your role, and jump into a multi-page
+            product flow designed for asking, offering, and tracking help with a
+            premium interface.
           </p>
           <ul className="space-y-4">
             {[
               "Role-based entry for Need Help, Can Help, or Both",
               "Direct path into dashboard, requests, AI Center, and community feed",
-              "Persistent demo session powered by LocalStorage",
+              "Real Firebase account created automatically on first login",
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span className="mt-[6px] w-[5px] h-[5px] rounded-full bg-gray-400 shrink-0" />
-                <span className="text-[14px] text-gray-400 leading-snug">{item}</span>
+                <span className="text-[14px] text-gray-400 leading-snug">
+                  {item}
+                </span>
               </li>
             ))}
           </ul>
@@ -95,7 +162,9 @@ export default function AuthPage() {
           <form onSubmit={handleAuth} className="flex flex-col gap-5">
             {mode === "login" && (
               <div className="flex flex-col gap-2">
-                <label className="text-[14px] font-semibold text-[#374151]">Select demo user</label>
+                <label className="text-[14px] font-semibold text-[#374151]">
+                  Select demo user
+                </label>
                 <select
                   value={selectedDemo}
                   onChange={handleDemoSelect}
@@ -111,7 +180,9 @@ export default function AuthPage() {
             )}
 
             <div className="flex flex-col gap-2">
-              <label className="text-[14px] font-semibold text-[#374151]">Role selection</label>
+              <label className="text-[14px] font-semibold text-[#374151]">
+                Role selection
+              </label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -125,7 +196,9 @@ export default function AuthPage() {
 
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex flex-col gap-2 flex-1">
-                <label className="text-[14px] font-semibold text-[#374151]">Email</label>
+                <label className="text-[14px] font-semibold text-[#374151]">
+                  Email
+                </label>
                 <input
                   type="email"
                   required
@@ -136,7 +209,9 @@ export default function AuthPage() {
                 />
               </div>
               <div className="flex flex-col gap-2 flex-1">
-                <label className="text-[14px] font-semibold text-[#374151]">Password</label>
+                <label className="text-[14px] font-semibold text-[#374151]">
+                  Password
+                </label>
                 <input
                   type="password"
                   required
@@ -159,7 +234,11 @@ export default function AuthPage() {
               disabled={loading}
               className="w-full bg-teal-primary hover:bg-teal-dark transition-colors text-white rounded-full py-[13px] font-semibold text-[15px] mt-2 disabled:opacity-60"
             >
-              {loading ? "Please wait..." : mode === "login" ? "Continue to dashboard" : "Create account"}
+              {loading
+                ? "Setting up your account..."
+                : mode === "login"
+                ? "Continue to dashboard"
+                : "Create account"}
             </button>
           </form>
 

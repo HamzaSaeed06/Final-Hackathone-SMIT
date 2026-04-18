@@ -12,8 +12,11 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
   
-  // Form State
-  const [name, setName] = useState("");
+  // Form State — pre-filled from auth localStorage
+  const [name, setName] = useState(() => {
+    if (typeof window !== "undefined") return localStorage.getItem("helphub_name") || "";
+    return "";
+  });
   const [location, setLocation] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
   
@@ -56,19 +59,24 @@ export default function OnboardingPage() {
 
   const completeOnboarding = async () => {
     const user = auth.currentUser;
+    const savedRole = typeof window !== "undefined" ? localStorage.getItem("helphub_role") || "Both" : "Both";
     if (user) {
       await setDoc(doc(db, "users", user.uid), {
-        name,
+        name: name || user.email?.split("@")[0] || "Member",
+        email: user.email,
         location,
         photoUrl,
         skills,
         needsHelpWith: needs,
-        role: "Both", // or derive from auth page flow
+        role: savedRole,
         trustScore: 50,
         helpCount: 0,
+        requestsCreated: 0,
         badgesEarned: [],
         createdAt: new Date().toISOString()
       }, { merge: true });
+      localStorage.removeItem("helphub_role");
+      localStorage.removeItem("helphub_name");
     }
     router.push("/dashboard");
   };
