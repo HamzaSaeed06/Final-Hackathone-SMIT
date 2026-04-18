@@ -61,13 +61,20 @@ const AUTH_NAV_CONFIGS = {
   ],
 };
 
-function getNavLinks(pathname, isLoggedIn) {
+function getNavLinks(pathname, isLoggedIn, isAdmin) {
   if (!isLoggedIn) return PUBLIC_NAV;
-  if (AUTH_NAV_CONFIGS[pathname]) return AUTH_NAV_CONFIGS[pathname];
+  if (AUTH_NAV_CONFIGS[pathname]) {
+    const links = [...AUTH_NAV_CONFIGS[pathname]];
+    if (isAdmin && !links.find(l => l.path === "/admin")) {
+      links.push({ name: "Admin", path: "/admin" });
+    }
+    return links;
+  }
   if (pathname.startsWith("/profile")) return [
     { name: "Dashboard", path: "/dashboard" },
     { name: "Onboarding", path: "/onboarding" },
     { name: "Profile", path: pathname },
+    ...(isAdmin ? [{ name: "Admin", path: "/admin" }] : []),
   ];
   if (pathname.startsWith("/request")) return [
     { name: "Dashboard", path: "/dashboard" },
@@ -79,6 +86,7 @@ function getNavLinks(pathname, isLoggedIn) {
     { name: "Dashboard", path: "/dashboard" },
     { name: "Explore", path: "/explore" },
     { name: "AI Center", path: "/ai-center" },
+    ...(isAdmin ? [{ name: "Admin", path: "/admin" }] : []),
   ];
 }
 
@@ -89,7 +97,8 @@ export default function Navbar() {
   const [showMenu, setShowMenu] = useState(false);
 
   const isLoggedIn = !!user;
-  const navLinks = getNavLinks(pathname, isLoggedIn);
+  const isAdmin = profile?.isAdmin === true;
+  const navLinks = getNavLinks(pathname, isLoggedIn, isAdmin);
 
   const initials = profile?.name
     ? profile.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase()
