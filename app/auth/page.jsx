@@ -215,6 +215,7 @@ export default function AuthPage() {
                 <input
                   type="password"
                   required
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
