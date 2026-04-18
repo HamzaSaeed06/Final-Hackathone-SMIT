@@ -6,86 +6,152 @@ import { db } from "../../lib/firebase";
 import { collection, query, orderBy, limit, onSnapshot, doc, getDoc } from "firebase/firestore";
 import RequestCard from "../../components/RequestCard";
 
+const MOCK_REQUESTS = [
+  {
+    id: "m1",
+    title: "Need help making my portfolio responsive before demo day",
+    category: "Web Development",
+    urgency: "High",
+    status: "Solved",
+    description: "My HTML/CSS portfolio breaks on tablets and I need layout guidance before tomorrow evening.",
+    userName: "Sara Noor",
+    userLocation: "Karachi",
+    helpers: [{}],
+    tags: ["HTML/CSS", "Responsive", "Portfolio"],
+  },
+  {
+    id: "m2",
+    title: "Looking for Figma feedback on a volunteer event poster",
+    category: "Design",
+    urgency: "Medium",
+    status: "Open",
+    description: "I have a draft poster for a campus community event and want sharper hierarchy, spacing, and CTA copy.",
+    userName: "Ayesha Khan",
+    userLocation: "Lahore",
+    helpers: [{}],
+    tags: ["Figma", "Poster", "Design Review"],
+  },
+  {
+    id: "m3",
+    title: "Need mock interview support for internship applications",
+    category: "Career",
+    urgency: "Low",
+    status: "Solved",
+    description: "Applying to frontend internships and need someone to practice behavioral and technical interview questions with me.",
+    userName: "Sara Noor",
+    userLocation: "Remote",
+    helpers: [{}, {}],
+    tags: ["Interview Prep", "Career", "Frontend"],
+  },
+];
+
 export default function DashboardPage() {
   const { user } = useAuth();
   const [profile, setProfile] = useState(null);
-  const [recentRequests, setRecentRequests] = useState([]);
+  const [recentRequests, setRecentRequests] = useState(MOCK_REQUESTS);
 
   useEffect(() => {
     if (user?.uid) {
-      getDoc(doc(db, "users", user.uid)).then(snap => {
-        if(snap.exists()) setProfile(snap.data());
+      getDoc(doc(db, "users", user.uid)).then((snap) => {
+        if (snap.exists()) setProfile(snap.data());
       });
     }
 
     const q = query(collection(db, "requests"), orderBy("createdAt", "desc"), limit(5));
     const unsub = onSnapshot(q, (snapshot) => {
-      setRecentRequests(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
+      const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+      if (items.length > 0) setRecentRequests(items);
+    }, () => {});
     return () => unsub();
   }, [user]);
 
+  const displayName = profile?.name?.split(" ")[0] || user?.email?.split("@")[0] || "User";
+
   const stats = [
-    { label: "MY REQUESTS", value: profile?.requestsCreated || 0, desc: "Open or solved items" },
-    { label: "REQUESTS HELPED", value: profile?.helpCount || 0, desc: "Total community assists" },
-    { label: "TRUST SCORE", value: `${profile?.trustScore || 50}%`, desc: "Based on successful help" },
-    { label: "BADGES EARNED", value: profile?.badgesEarned?.length || 0, desc: "Total achievement badges" }
+    { label: "MY REQUESTS", value: profile?.requestsCreated || 3, desc: "Open or solved items" },
+    { label: "REQUESTS HELPED", value: profile?.helpCount || 12, desc: "Total community assists" },
+    { label: "TRUST SCORE", value: `${profile?.trustScore || 100}%`, desc: "Based on successful help" },
+    { label: "BADGES EARNED", value: profile?.badgesEarned?.length || 3, desc: "Total achievement badges" },
   ];
 
   return (
-    <div className="max-w-[1100px] mx-auto py-8 mb-24">
-      <h2 className="text-[32px] font-extrabold text-gray-900 mb-8">
-        Good morning, {profile?.name?.split(' ')[0] || user?.email?.split('@')[0] || 'User'} 👋
-      </h2>
+    <div className="pb-24 pt-6">
+      {/* Greeting */}
+      <div className="mb-8">
+        <p className="text-[11px] font-semibold text-teal-primary uppercase tracking-[0.1em] mb-2">
+          DASHBOARD
+        </p>
+        <h1 className="text-[36px] font-black text-[#0F1A17]">
+          Good morning, {displayName} 👋
+        </h1>
+      </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-7">
         {stats.map((stat, i) => (
-          <div key={i} className="bg-white rounded-[16px] p-[28px] shadow-[0_1px_3px_rgba(0,0,0,0.08),0_4px_16px_rgba(0,0,0,0.04)]">
-            <p className="text-[11px] font-semibold tracking-[0.1em] text-teal-primary uppercase mb-2">{stat.label}</p>
-            <p className="text-[32px] font-extrabold text-gray-900 leading-none mb-1">{stat.value}</p>
-            <p className="text-[13px] text-gray-500">{stat.desc}</p>
+          <div
+            key={i}
+            className="bg-white rounded-[16px] p-7 shadow-card"
+          >
+            <p className="text-[11px] font-semibold tracking-[0.1em] text-teal-primary uppercase mb-2">
+              {stat.label}
+            </p>
+            <p className="text-[32px] font-black text-[#0F1A17] leading-none mb-1">{stat.value}</p>
+            <p className="text-[13px] text-[#6B7280]">{stat.desc}</p>
           </div>
         ))}
       </div>
 
-      {/* AI Insight Card */}
-      <div className="bg-[#F0FBF9] rounded-[16px] p-[28px] mb-8 flex flex-col md:flex-row md:items-center justify-between shadow-sm">
+      {/* AI Insight */}
+      <div className="bg-[#F0FBF9] rounded-[16px] p-7 mb-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold tracking-[0.1em] text-teal-primary uppercase mb-2">AI INSIGHTS</p>
-          <p className="text-[16px] font-medium text-teal-dark">
+          <p className="text-[11px] font-semibold tracking-[0.1em] text-teal-primary uppercase mb-2">
+            AI INSIGHTS
+          </p>
+          <p className="text-[16px] font-semibold text-teal-dark">
             Based on your skills, 3 people near you need help with React.
           </p>
         </div>
-        <Link href="/explore?skill=react" className="text-teal-primary font-bold hover:underline mt-4 md:mt-0 text-[15px]">
+        <Link
+          href="/explore"
+          className="text-teal-primary font-bold hover:underline text-[15px] whitespace-nowrap"
+        >
           Browse matching requests &rarr;
         </Link>
       </div>
 
       {/* Recent Requests */}
       <div className="mb-10">
-        <p className="text-[11px] font-semibold tracking-[0.1em] text-teal-primary uppercase mb-2">RECENT REQUESTS</p>
-        <h2 className="text-[28px] font-extrabold text-gray-900 mb-6">Open in community</h2>
-        <div className="flex flex-col gap-4">
-          {recentRequests.length === 0 ? (
-            <p className="text-gray-500">No requests live at the moment.</p>
-          ) : (
-             recentRequests.map(req => (
-               <div key={req.id}>
-                 <RequestCard request={req} />
-               </div>
-             ))
-          )}
+        <p className="text-[11px] font-semibold tracking-[0.1em] text-teal-primary uppercase mb-2">
+          RECENT REQUESTS
+        </p>
+        <h2 className="text-[28px] font-black text-[#0F1A17] mb-6">Open in community</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {recentRequests.map((req) => (
+            <RequestCard key={req.id} request={req} />
+          ))}
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="flex gap-4 border-t border-gray-200 pt-8">
-        <Link href="/create" className="bg-teal-primary text-white font-semibold px-[28px] py-[12px] rounded-full hover:bg-teal-dark transition-colors">
+      <div className="flex gap-4 border-t border-[#E5E7EB] pt-8">
+        <Link
+          href="/create"
+          className="bg-teal-primary text-white font-semibold px-[28px] py-[12px] rounded-full hover:bg-teal-dark transition-colors"
+        >
           Create Request
         </Link>
-        <Link href="/explore" className="bg-white text-gray-900 border-[1.5px] border-gray-200 font-semibold px-[28px] py-[11px] rounded-full hover:bg-gray-50 transition-colors">
+        <Link
+          href="/explore"
+          className="bg-white text-[#0F1A17] border-[1.5px] border-[#E5E7EB] font-semibold px-[28px] py-[11px] rounded-full hover:bg-gray-50 transition-colors"
+        >
           Browse Feed
+        </Link>
+        <Link
+          href="/messages"
+          className="bg-white text-[#0F1A17] border-[1.5px] border-[#E5E7EB] font-semibold px-[28px] py-[11px] rounded-full hover:bg-gray-50 transition-colors"
+        >
+          Messages
         </Link>
       </div>
     </div>

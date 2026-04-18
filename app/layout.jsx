@@ -3,7 +3,7 @@ import { AuthProvider } from "../context/AuthContext";
 import "../styles/globals.css";
 import Navbar from "../components/Navbar";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"] });
 
 export const metadata = {
   title: "HelpHub AI",
@@ -15,10 +15,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <Navbar />
-          <main className="max-w-[1280px] mx-auto px-6">
-            {children}
-          </main>
+          <div className="max-w-[1200px] mx-auto px-6">
+            <Navbar />
+            <main>{children}</main>
+          </div>
         </AuthProvider>
       </body>
     </html>

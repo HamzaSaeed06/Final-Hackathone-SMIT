@@ -6,28 +6,26 @@ import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { fadeUp } from "../../lib/animations";
 
+const MOCK_LEADERS = [
+  { id: 1, name: "Ayesha Khan", trustScore: 98, helpCount: 45, skills: ["React", "UI/UX", "Firebase"], badgesEarned: ["Top Mentor", "Fast Responder"] },
+  { id: 2, name: "Hassan Ali", trustScore: 92, helpCount: 32, skills: ["Python", "Machine Learning"], badgesEarned: ["Code Rescuer", "Fast Responder"] },
+  { id: 3, name: "Sara Noor", trustScore: 88, helpCount: 19, skills: ["Figma", "UI/UX", "Design Systems"], badgesEarned: ["Design Ally"] },
+  { id: 4, name: "Fahad Ahmed", trustScore: 78, helpCount: 12, skills: ["JavaScript", "HTML/CSS"], badgesEarned: ["Fast Responder"] },
+  { id: 5, name: "Ali Usman", trustScore: 65, helpCount: 5, skills: ["Marketing", "Career"], badgesEarned: ["First Helper"] }
+];
+
 export default function LeaderboardPage() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(MOCK_LEADERS);
 
   useEffect(() => {
     const fetchLeaders = async () => {
-      // Create a mock default array so it isn't empty while waiting or if empty
-      let mockHelpers = [
-        { id: 1, name: "Ayesha Khan", trustScore: 98, helpCount: 45, skills: ["React", "UI/UX", "Firebase"], badgesEarned: ["Top Mentor", "Fast Responder"] },
-        { id: 2, name: "Hassan Ali", trustScore: 92, helpCount: 32, skills: ["Python", "Machine Learning"], badgesEarned: ["Code Rescuer", "Fast Responder"] },
-        { id: 3, name: "Sara Noor", trustScore: 88, helpCount: 19, skills: ["Figma", "UI/UX", "Design Systems"], badgesEarned: ["Design Ally"] },
-        { id: 4, name: "Fahad Ahmed", trustScore: 78, helpCount: 12, skills: ["JavaScript", "HTML/CSS"], badgesEarned: ["Fast Responder"] },
-        { id: 5, name: "Ali Usman", trustScore: 65, helpCount: 5, skills: ["Marketing", "Career"], badgesEarned: ["First Helper"] }
-      ];
-
-      const q = query(collection(db, "users"), orderBy("helpCount", "desc"), limit(10));
-      const snap = await getDocs(q);
-      
-      if (!snap.empty) {
-        setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      } else {
-        setUsers(mockHelpers);
-      }
+      try {
+        const q = query(collection(db, "users"), orderBy("helpCount", "desc"), limit(10));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        }
+      } catch (_) {}
     };
     fetchLeaders();
   }, []);

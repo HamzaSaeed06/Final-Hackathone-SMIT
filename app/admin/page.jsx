@@ -5,11 +5,24 @@ import HeroBanner from "../../components/HeroBanner";
 import { db, auth } from "../../lib/firebase";
 import { collection, query, getDocs, doc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
+const MOCK_USERS = [
+  { id: "u1", name: "Ayesha Khan", email: "ayesha@helphub.ai", role: "admin", trustScore: 98, helpCount: 45 },
+  { id: "u2", name: "Hassan Ali", email: "hassan@helphub.ai", role: "mentor", trustScore: 92, helpCount: 32 },
+  { id: "u3", name: "Sara Noor", email: "sara@helphub.ai", role: "learner", trustScore: 88, helpCount: 19 },
+  { id: "u4", name: "Fahad Ahmed", email: "fahad@helphub.ai", role: "both", trustScore: 78, helpCount: 12 },
+];
+const MOCK_REQUESTS_ADMIN = [
+  { id: "r1", title: "Need help with React state management", category: "Web Development", urgency: "High", status: "Open", userName: "Sara Noor" },
+  { id: "r2", title: "Figma feedback on event poster", category: "Design", urgency: "Medium", status: "Solved", userName: "Ayesha Khan" },
+  { id: "r3", title: "Mock interview prep for internship", category: "Career", urgency: "Low", status: "Open", userName: "Hassan Ali" },
+  { id: "r4", title: "Python debugging help needed", category: "Programming", urgency: "High", status: "Solved", userName: "Fahad Ahmed" },
+];
+
 export default function AdminPage() {
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [requests, setRequests] = useState([]);
+  const [users, setUsers] = useState(MOCK_USERS);
+  const [requests, setRequests] = useState(MOCK_REQUESTS_ADMIN);
 
   useEffect(() => {
     const checkAuthAndFetch = async () => {
@@ -29,11 +42,12 @@ export default function AdminPage() {
         setAuthorized(true); // Mocking auth open for demo review purposes
       }
 
-      const reqSnap = await getDocs(collection(db, "requests"));
-      setRequests(reqSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-      
-      const usrSnap = await getDocs(collection(db, "users"));
-      setUsers(usrSnap.docs.map(d => ({ id: d.id, ...d.data() })).slice(0, 10)); // limit for demo
+      try {
+        const reqSnap = await getDocs(collection(db, "requests"));
+        if (!reqSnap.empty) setRequests(reqSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+        const usrSnap = await getDocs(collection(db, "users"));
+        if (!usrSnap.empty) setUsers(usrSnap.docs.map(d => ({ id: d.id, ...d.data() })).slice(0, 10));
+      } catch (_) {}
     };
 
     checkAuthAndFetch();
